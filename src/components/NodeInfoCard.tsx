@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { lastSeen, isMqttUpdated } from "../utils/mqttChecks";
 
 interface NodeInfoProps {
   longName: string;
@@ -35,37 +36,8 @@ function NodeInfoCard({
     return emojiRegex.test(str) && str.length <= 2; // Ensure it's a single emoji
   };
 
-  const isMqttUpdated = (date: Date | null | undefined): boolean => {
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
-      return false; // Return false if date is invalid or undefined
-    }
-
-    const now = new Date();
-    const diff = Math.abs(now.getTime() - date.getTime());
-    const diffInMinutes = Math.floor(diff / (1000 * 60));
-    return diffInMinutes < 60; // Check if the update was within the last hour
-  };
-  const isUpdated = isMqttUpdated(mqttUpdated);
+  const isUpdated = isMqttUpdated({ date: mqttUpdated });
   const updatedClass = isUpdated ? "bg-[#21b062]" : "bg-[#3b3c36]";
-
-  const lastSeen = (date: Date) => {
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
-      return "invalid";
-    }
-    const now = new Date();
-    const diff = Math.abs(now.getTime() - date.getTime());
-    const diffInMinutes = Math.floor(diff / (1000 * 60));
-    // Check if date is before year 2000 (unset)
-    if (date.getTime() < new Date("2000-01-01").getTime()) {
-      return "unknown";
-    }
-    if (diffInMinutes >= 60) {
-      const hours = Math.floor(diffInMinutes / 60);
-      const minutes = diffInMinutes % 60;
-      return `${hours} h ${minutes} min ago`;
-    }
-    return `${diffInMinutes} min ago`;
-  };
 
   // Conditionally set the font size: larger for emojis, smaller for strings
   const shortNameClass = isEmoji(displayShortName) ? "text-[38px]" : "text-2xl";
@@ -102,7 +74,9 @@ function NodeInfoCard({
           {isValid(ch2Power) && <p className="mr-2 select-none">{ch2Power}</p>}
           {isValid(ch3Power) && <p className="mr-2 select-none">{ch3Power}</p>}
         </div>
-        <p className="select-none">last seen {lastSeen(mqttUpdated)}</p>
+        <p className="select-none">
+          last seen {lastSeen({ date: mqttUpdated })}
+        </p>
       </div>
     </div>
   );
