@@ -22,6 +22,12 @@ jobs:
         run: |
           npm install
           npm run build
+          
+      - name: install ssh keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} > ~/.ssh/known_hosts
 
       - name: 📂 Sync files
         uses: SamKirkland/web-deploy@v1
