@@ -30,3 +30,4 @@ jobs:
           remote-user: ${{ secrets.SERVER_USERNAME }}
           private-ssh-key: ${{ secrets.SERVER_SSH_KEY }}
           destination-path: /var/www/html/
+          source-path: /home/valtteru/runner/
