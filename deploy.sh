@@ -9,3 +9,4 @@ echo copying files
 cp -r ./dist/* /var/www/html/
 
 cp -r ./Backend/* "../MeshMetrics Backend/"
+
