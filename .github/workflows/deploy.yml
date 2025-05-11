@@ -24,10 +24,11 @@ jobs:
           npm run build
 
       - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/web-deploy@v1
         with:
-          server: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
+          target-server: ${{ secrets.SERVER_HOST }}
+          remote-user: ${{ secrets.SERVER_USERNAME }}
+          private-ssh-key: ${{ secrets.SERVER_SSH_KEY }}
+          protocol: ftps-legacy
           local-dir: ./dist/
           server-dir: /var/www/html/
