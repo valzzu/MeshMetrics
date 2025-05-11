@@ -22,7 +22,7 @@ jobs:
         run: |
           npm install
           npm run build
-          
+
       - name: install ssh keys
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
@@ -37,3 +37,5 @@ jobs:
           private-ssh-key: ${{ secrets.SERVER_SSH_KEY }}
           destination-path: /var/www/html/
           source-path: /home/valtteru/runner/
+      - name: cleanup
+        run: rm -rf ~/.ssh
