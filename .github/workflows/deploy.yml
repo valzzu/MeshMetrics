@@ -30,12 +30,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} > ~/.ssh/known_hosts
 
       - name: 📂 Sync files
-        uses: SamKirkland/web-deploy@v1
-        with:
-          target-server: ${{ secrets.SERVER_HOST }}
-          remote-user: ${{ secrets.SERVER_USERNAME }}
-          private-ssh-key: ${{ secrets.SERVER_SSH_KEY }}
-          destination-path: /var/www/html/
-          source-path: /home/valtteru/runner/
+        run: ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_WORK_DIR }} && git checkout main && git pull && sh ./deploy.sh"
+
       - name: cleanup
         run: rm -rf ~/.ssh
