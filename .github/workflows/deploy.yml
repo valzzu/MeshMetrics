@@ -29,6 +29,4 @@ jobs:
           target-server: ${{ secrets.SERVER_HOST }}
           remote-user: ${{ secrets.SERVER_USERNAME }}
           private-ssh-key: ${{ secrets.SERVER_SSH_KEY }}
-          protocol: ftps-legacy
-          local-dir: ./dist/
-          server-dir: /var/www/html/
+          destination-path: /var/www/html/
