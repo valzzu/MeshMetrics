@@ -13,15 +13,10 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      - name: Use Node.js 16
+      - name: Use Node.js 20
         uses: actions/setup-node@v2
         with:
           node-version: "20"
-
-      - name: 🔨 Build Project
-        run: |
-          npm install
-          npm run build
 
       - name: install ssh keys
         run: |
@@ -29,7 +24,7 @@ jobs:
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} > ~/.ssh/known_hosts
 
-      - name: 📂 Sync files
+      - name: deploy to server
         run: ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_WORK_DIR }} && git checkout main && git pull && sh ./deploy.sh"
 
       - name: cleanup
