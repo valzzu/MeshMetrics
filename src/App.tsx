@@ -19,6 +19,11 @@ function App() {
       const response = await fetch(`${config.api_url}/api/nodes`);
       const initialNodes = await response.json();
       console.log("fetched");
+
+      if (response.status !== 200) {
+        console.error("Error fetching nodes:", response.statusText);
+        return;
+      }
       setNodes(initialNodes);
     };
 
