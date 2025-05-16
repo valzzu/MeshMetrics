@@ -65,6 +65,8 @@ function Main({ nodes }: HeaderProps) {
                 ? new Date(node.mqtt_updated_at)
                 : new Date(0) // Fallback to epoch date
             }
+            hardwareModel={node.hardware_model}
+            role={node.role}
           />
         ))
       ) : (

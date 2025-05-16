@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { lastSeen, isMqttUpdated } from "../utils/mqttChecks";
+import { HardwareModel, Role } from "../utils/NodeData";
 
 interface NodeInfoProps {
   longName: string;
@@ -11,6 +12,8 @@ interface NodeInfoProps {
   ch2Power: string;
   ch3Power: string;
   mqttUpdated: Date;
+  hardwareModel?: number;
+  role?: number;
 }
 
 function NodeInfoCard({
@@ -23,6 +26,8 @@ function NodeInfoCard({
   ch2Power,
   ch3Power,
   mqttUpdated,
+  hardwareModel,
+  role,
 }: NodeInfoProps) {
   const isValid = (value: string) =>
     value && value !== "N/A" && value.trim() !== "";
@@ -42,6 +47,30 @@ function NodeInfoCard({
   // Conditionally set the font size: larger for emojis, smaller for strings
   const shortNameClass = isEmoji(displayShortName) ? "text-[38px]" : "text-2xl";
   0;
+
+  function getHardwareName(id: number | undefined): string {
+    if (id === undefined) {
+      return "Unknown Hardware";
+    }
+    const hardware_model = HardwareModel[id];
+    if (!hardware_model) {
+      return "Unknown Hardware";
+    }
+    return hardware_model.split("_").join(" ");
+  }
+
+  function getRoleName(id: number | undefined): string {
+    if (id === undefined) {
+      return "Unknown Role";
+    }
+
+    const hardware_model = Role[id];
+    if (!hardware_model) {
+      return "Unknown Role";
+    }
+    return hardware_model.split("_").join(" ");
+  }
+
   return (
     <div className="bg-[#1b1b1d] w-90 h-24 m-2 p-2 text-white flex">
       {/* Left Section: Short Name in a grey circle */}
@@ -58,6 +87,9 @@ function NodeInfoCard({
       {/* Right Section: Long Name and Telemetry in a centered column */}
       <div className="flex-1 flex flex-col items-center justify-center">
         <p className="text-[18px] select-none">{displayLongName}</p>
+        <p id="LastSeen" className="select-none">
+          last seen {lastSeen({ date: mqttUpdated })}
+        </p>
         <div
           id="EnvInfo"
           className="flex justify-center text-white select-none"
@@ -74,9 +106,14 @@ function NodeInfoCard({
           {isValid(ch2Power) && <p className="mr-2 select-none">{ch2Power}</p>}
           {isValid(ch3Power) && <p className="mr-2 select-none">{ch3Power}</p>}
         </div>
-        <p className="select-none">
-          last seen {lastSeen({ date: mqttUpdated })}
-        </p>
+
+        <div
+          id="DeviceInfo"
+          className="select-none flex justify-center text-[15px]"
+        >
+          <p className="mr-2 select-none">{getHardwareName(hardwareModel)}</p>
+          <p className="mr-2 select-none">{getRoleName(role)}</p>
+        </div>
       </div>
     </div>
   );
