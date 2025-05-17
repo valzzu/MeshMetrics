@@ -11,7 +11,7 @@ import "leaflet/dist/leaflet.css";
 
 import type { NodeData } from "../utils/NodeData";
 import { isMqttUpdated } from "../utils/mqttChecks";
-import NodeInfoPopup from "../components/NodeInfoPopup";
+// import NodeInfoPopup from "../components/NodeInfoPopup";
 
 // Define the shape of a marker
 interface Marker {
@@ -65,7 +65,7 @@ interface WorldMapProps {
 // };
 
 const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
-  const [showPopup, setShowPopup] = useState(false);
+  // const [showPopup, setShowPopup] = useState(false);
 
   const map = useMap();
   const [radius, setRadius] = useState(6); // Base radius at default zoom
@@ -75,7 +75,7 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
     const updateRadius = () => {
       const currentZoom = map.getZoom();
       // Scale radius linearly: radius = baseRadius * (currentZoom / baseZoom)
-      const newRadius = 5 * Math.pow(1.2, currentZoom - baseZoom);
+      const newRadius = 5 * 1.2 ** (currentZoom - baseZoom);
       setRadius(Math.min(15, Math.max(6, newRadius)));
     };
 
@@ -104,8 +104,8 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
           if (
             typeof lat !== "number" ||
             typeof lon !== "number" ||
-            isNaN(lat) ||
-            isNaN(lon) ||
+            Number.isNaN(lat) ||
+            Number.isNaN(lon) ||
             lat < -90 ||
             lat > 90 ||
             lon < -180 ||
@@ -126,9 +126,9 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
               weight={1}
               fillOpacity={1}
               eventHandlers={{
-                click: () => {
-                  setShowPopup(true);
-                },
+                // click: () => {
+                //   setShowPopup(true);
+                // },
                 mouseover: (e) => {
                   e.target.setStyle({
                     radius: radius * 1.6,
