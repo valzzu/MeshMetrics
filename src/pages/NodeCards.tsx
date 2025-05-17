@@ -1,9 +1,10 @@
 import { Zoomies } from "ldrs/react";
 import NodeInfoCard from "../components/NodeInfoCard";
 import { sortMqttDates } from "../utils/mqttChecks";
+import type { NodeData } from "../utils/NodeData";
 
 interface HeaderProps {
-  nodes: any[]; // Replace 'any' with the actual type of your nodes
+  nodes: NodeData[]; // Replace 'any' with the actual type of your nodes
 }
 
 function NodeCards({ nodes }: HeaderProps) {
@@ -66,11 +67,15 @@ function NodeCards({ nodes }: HeaderProps) {
                 ? new Date(node.mqtt_updated_at)
                 : new Date(0) // Fallback to epoch date
             }
-            hardwareModel={node.hardware_model}
-            role={node.role}
+            hardwareModel={
+              node.hardware_model !== undefined
+                ? Number(node.hardware_model)
+                : undefined
+            }
+            role={node.role !== undefined ? Number(node.role) : undefined}
           />
         ))
-      ) : (
+        ) : (
         <div className="justify-center content-center select-none">
           <p>Loading nodes</p>
           <Zoomies
@@ -81,7 +86,7 @@ function NodeCards({ nodes }: HeaderProps) {
             color="white"
           />
         </div>
-      )}
+      )} 
     </div>
   );
 }

@@ -9,7 +9,7 @@ import {
 import "leaflet/dist/leaflet.css";
 //import L from "leaflet";
 
-import { NodeData } from "../utils/NodeData";
+import type { NodeData } from "../utils/NodeData";
 import { isMqttUpdated } from "../utils/mqttChecks";
 import NodeInfoPopup from "../components/NodeInfoPopup";
 
@@ -144,13 +144,13 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
               }}
             >
               <Tooltip>{`${long_name} - ${short_name}`}</Tooltip>
-              <NodeInfoPopup
+              {/* <NodeInfoPopup
                 id={id}
                 isOpen={showPopup}
                 onClose={() => {
                   setShowPopup(false);
                 }}
-              />
+              /> */}
             </CircleMarker>
           );
         }

@@ -51,6 +51,12 @@ app.get("/api/nodes", async (req, res) => {
   res.json(nodes);
 });
 
+const formatNumber = (value, decimals) => {
+  if (!value) return value;
+  const num = parseFloat(value);
+  return isNaN(num) ? value : num.toFixed(decimals);
+};
+
 // Helper function to get combined nodes data with rounded values
 async function getNodesData() {
   const nodeInfos = await NodeInfo.find();
@@ -63,14 +69,9 @@ async function getNodesData() {
         telemetryData.find((t) => t.from === info.from) || {};
 
       // Function to format numbers from strings with specific precision
-      const formatNumber = (value, decimals) => {
-        if (!value) return value;
-        const num = parseFloat(value);
-        return isNaN(num) ? value : num.toFixed(decimals);
-      };
 
       return {
-        id: info.id,
+        id: info._id,
         shortName: info.short_name,
         longName: info.long_name,
         telemetry: nodeTelemetry
@@ -134,12 +135,13 @@ async function getNodesData() {
 
 app.get("/api/nodes/:id", async (req, res) => {
   const { id } = req.params;
-  const nodeInfo = await NodeInfo.findOne({ id });
+  const nodeInfo = await NodeInfo.findOne({ _id: id });
   const nodeTelemetry = await Telemetry.findOne({
     from: nodeInfo.from,
   });
+
   const node = {
-    id: nodeInfo.id,
+    id: nodeInfo._id,
     shortName: nodeInfo.short_name,
     longName: nodeInfo.long_name,
     telemetry: nodeTelemetry

@@ -24,6 +24,7 @@ export interface Telemetry {
 }
 
 export interface NodeData {
+  mqttUpdated: Date;
   id: string;
   shortName: string;
   longName: string;
@@ -40,6 +41,7 @@ export interface NodeData {
   position_updated_at?: number;
   neighbours_updated_at?: number;
   neighbour_broadcast_interval_secs?: number;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   neighbours?: any[]; // You can define a more specific type if needed
   mqtt_connection_state?: string;
   mqtt_updated_at?: number;

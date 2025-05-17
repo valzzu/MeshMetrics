@@ -43,7 +43,8 @@ function NodeInfoCard({
   // Function to detect if the string is an emoji
   const isEmoji = (str: string) => {
     // This regex matches most emojis (Unicode ranges for emoji)
-    const emojiRegex = /[\p{Emoji_Presentation}\p{Emoji}\u200D\uFE0F]/u;
+    // biome-ignore lint/suspicious/noMisleadingCharacterClass: <explanation>
+        const emojiRegex = /[\p{Emoji_Presentation}\p{Emoji}\u200D\uFE0F]/u;
     return emojiRegex.test(str) && str.length <= 2; // Ensure it's a single emoji
   };
 
@@ -78,6 +79,7 @@ function NodeInfoCard({
   }
 
   return (
+    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
       className="bg-[#1b1b1d] w-90 h-30 m-2 p-2 text-white flex hover:border-[#2a9d5f] hover:border-2 rounded-lg shadow-md "
       onClick={() => {
