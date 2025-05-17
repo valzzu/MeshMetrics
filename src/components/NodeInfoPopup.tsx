@@ -3,8 +3,13 @@ interface NodeInfoPopupProps {
   onClose: () => void;
 }
 
-function NodeInfoPopup({ isOpen, onClose }: NodeInfoPopupProps) {
+interface NodeInfoPopupProps {
+  id: string; //id of the node
+}
+
+function NodeInfoPopup({ id, isOpen, onClose }: NodeInfoPopupProps) {
   if (!isOpen) return null;
+  console.log(id);
 
   return (
     <div

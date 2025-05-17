@@ -5,6 +5,7 @@ import NodeInfoPopup from "../components/NodeInfoPopup";
 import { useState } from "react";
 
 interface NodeInfoProps {
+  id: string;
   longName: string;
   shortName: string;
   temp: string;
@@ -19,6 +20,7 @@ interface NodeInfoProps {
 }
 
 function NodeInfoCard({
+  id,
   longName,
   shortName,
   temp,
@@ -139,6 +141,7 @@ function NodeInfoCard({
         </div>
       </div>
       <NodeInfoPopup
+        id={id}
         isOpen={showPopup}
         onClose={() => {
           setShowPopup(false);

@@ -15,6 +15,7 @@ import NodeInfoPopup from "../components/NodeInfoPopup";
 
 // Define the shape of a marker
 interface Marker {
+  id: string;
   long_name: string;
   short_name: string;
   coordinates: [number, number]; // [latitude, longitude]
@@ -92,14 +93,8 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
 
   return (
     <>
-      <NodeInfoPopup
-        isOpen={showPopup}
-        onClose={() => {
-          setShowPopup(false);
-        }}
-      />
       {markers.map(
-        ({ long_name, short_name, coordinates, mqttUpdated }, index) => {
+        ({ id, long_name, short_name, coordinates, mqttUpdated }, index) => {
           const [lat, lon] = coordinates;
           const isUpdated = isMqttUpdated({
             date: mqttUpdated ? new Date(mqttUpdated) : undefined,
@@ -149,6 +144,13 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
               }}
             >
               <Tooltip>{`${long_name} - ${short_name}`}</Tooltip>
+              <NodeInfoPopup
+                id={id}
+                isOpen={showPopup}
+                onClose={() => {
+                  setShowPopup(false);
+                }}
+              />
             </CircleMarker>
           );
         }
@@ -164,7 +166,7 @@ function WorldMap({ nodes }: WorldMapProps) {
       (node) => node.longitude !== undefined && node.latitude !== undefined
     )
     .map((node) => {
-      const { longName, shortName, latitude, longitude, mqtt_updated_at } =
+      const { id, longName, shortName, latitude, longitude, mqtt_updated_at } =
         node;
       // Convert from microdegrees to decimal degrees (fixed divisor)
 
@@ -173,6 +175,7 @@ function WorldMap({ nodes }: WorldMapProps) {
       // Log for debugging
       //console.log(`Node: ${longName || "Unknown"} - Lat: ${lat}, Lon: ${lon}`);
       return {
+        id: id?.toString() || "Unknown",
         long_name: longName || "Unknown",
         short_name: shortName || "????",
         coordinates: [lat, lon], // [latitude, longitude]

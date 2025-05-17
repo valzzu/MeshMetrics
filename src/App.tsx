@@ -1,7 +1,7 @@
 import "./App.css";
 import Header from "./components/Header";
 import WorldMap from "./pages/WorldMap";
-import Main from "./pages/NodeCards";
+import NodeCards from "./pages/NodeCards";
 import NotFound from "./pages/NotFound";
 import { useEffect } from "react";
 import { useNodeStore } from "./utils/store";
@@ -50,7 +50,7 @@ function App() {
       <Header online={online} offline={offline} />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Main nodes={nodes} />} />
+          <Route path="/" element={<NodeCards nodes={nodes} />} />
           <Route path="/map" element={<WorldMap nodes={nodes} />} />
           <Route path="*" element={<NotFound />} /> {/* 404 Route */}
         </Routes>

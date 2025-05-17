@@ -70,7 +70,7 @@ async function getNodesData() {
       };
 
       return {
-        id: info._id,
+        id: info.id,
         shortName: info.short_name,
         longName: info.long_name,
         telemetry: nodeTelemetry
@@ -131,6 +131,70 @@ async function getNodesData() {
 
   return nodes;
 }
+
+app.get("/api/nodes/:id", async (req, res) => {
+  const { id } = req.params;
+  const nodeInfo = await NodeInfo.findOne({ id });
+  const nodeTelemetry = await Telemetry.findOne({
+    from: nodeInfo.from,
+  });
+  const node = {
+    id: nodeInfo.id,
+    shortName: nodeInfo.short_name,
+    longName: nodeInfo.long_name,
+    telemetry: nodeTelemetry
+      ? {
+          air_util_tx: nodeTelemetry.air_util_tx,
+          battery_level: nodeTelemetry.battery_level,
+          channel_utilization: nodeTelemetry.channel_utilization,
+          uptime_seconds: nodeTelemetry.uptime_seconds,
+          voltage: nodeTelemetry.voltage,
+          barometric_pressure: formatNumber(
+            nodeTelemetry.barometric_pressure,
+            1
+          ), // 1000.0 hPa
+          current: nodeTelemetry.current,
+          gas_resistance: nodeTelemetry.gas_resistance,
+          iaq: nodeTelemetry.iaq,
+          lux: nodeTelemetry.lux,
+          relative_humidity: formatNumber(nodeTelemetry.relative_humidity, 1), // 68.9%
+          temperature: formatNumber(nodeTelemetry.temperature, 1), // -0.1°C
+          white_lux: nodeTelemetry.white_lux,
+          wind_direction: nodeTelemetry.wind_direction,
+          wind_speed: nodeTelemetry.wind_speed,
+          current_ch1: nodeTelemetry.current_ch1,
+          current_ch2: nodeTelemetry.current_ch2,
+          current_ch3: nodeTelemetry.current_ch3,
+          voltage_ch1: nodeTelemetry.voltage_ch1,
+          voltage_ch2: nodeTelemetry.voltage_ch2,
+          voltage_ch3: nodeTelemetry.voltage_ch3,
+        }
+      : {},
+    from: nodeInfo.from,
+    hardware_model: nodeInfo.hardware_model,
+    role: nodeInfo.role,
+    hop_start: nodeInfo.hop_start,
+    hops_away: nodeInfo.hops_away,
+    timestamp: nodeInfo.timestamp,
+    latitude: nodeInfo.latitude,
+    longitude: nodeInfo.longitude,
+    altitude: nodeInfo.altitude,
+    position_updated_at: nodeInfo.position_updated_at,
+    neighbours_updated_at: nodeInfo.neighbours_updated_at,
+    neighbour_broadcast_interval_secs:
+      nodeInfo.neighbour_broadcast_interval_secs,
+    neighbours: nodeInfo.neighbours,
+    mqtt_connection_state: nodeInfo.mqtt_connection_state,
+    mqtt_updated_at: nodeInfo.mqtt_updated_at,
+    firmware_version: nodeInfo.firmware_version,
+    region: nodeInfo.region,
+    modem_preset: nodeInfo.modem_preset,
+    has_default_channel: nodeInfo.has_default_channel,
+    position_precision: nodeInfo.position_precision,
+    num_online_local_nodes: nodeInfo.num_online_local_nodes,
+  };
+  res.json(node);
+});
 
 const PORT = process.env.PORT || 80;
 const server = app.listen(PORT, () => {
