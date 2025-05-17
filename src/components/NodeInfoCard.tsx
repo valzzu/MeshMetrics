@@ -1,6 +1,8 @@
 import { memo } from "react";
 import { lastSeen, isMqttUpdated } from "../utils/mqttChecks";
 import { HardwareModel, Role } from "../utils/NodeData";
+import NodeInfoPopup from "../components/NodeInfoPopup";
+import { useState } from "react";
 
 interface NodeInfoProps {
   longName: string;
@@ -29,6 +31,8 @@ function NodeInfoCard({
   hardwareModel,
   role,
 }: NodeInfoProps) {
+  const [showPopup, setShowPopup] = useState(false);
+
   const isValid = (value: string) =>
     value && value !== "N/A" && value.trim() !== "";
 
@@ -72,7 +76,12 @@ function NodeInfoCard({
   }
 
   return (
-    <div className="bg-[#1b1b1d] w-90 h-30 m-2 p-2 text-white flex">
+    <div
+      className="bg-[#1b1b1d] w-90 h-30 m-2 p-2 text-white flex hover:border-[#2a9d5f] hover:border-2 rounded-lg shadow-md "
+      onClick={() => {
+        setShowPopup(true);
+      }}
+    >
       {/* Left Section: Short Name in a grey circle */}
       <div className="flex items-center justify-center w-20 h-20 ml-3 mr-4">
         <div
@@ -85,26 +94,30 @@ function NodeInfoCard({
       </div>
 
       {/* Right Section: Long Name and Telemetry in a centered column */}
-      <div className="flex-1 flex flex-col items-center justify-center">
+      <div className="flex-1 flex flex-col justify-start text-left">
         <p className="text-[18px] font-bold select-none">{displayLongName}</p>
         <p
           id="LastSeen"
-          className="select-none text-[#ccc] text-[14px] font-medium"
+          className="select-none text-[#ccc] text-[14px] font-medium text-left"
         >
-          Last seen {lastSeen({ date: mqttUpdated })}
+          Active: {lastSeen({ date: mqttUpdated })}
         </p>
         <div
           id="EnvInfo"
-          className="flex justify-center text-[#ccc] select-none text-[14px] font-medium"
+          className="flex justify-start text-[#ccc] select-none text-[14px] font-medium"
         >
+          {isValid(temp || humidity || pressure) && (
+            <p className="mr-1">Env:</p>
+          )}
           {isValid(temp) && <p className="mr-2 select-none">{temp}</p>}
           {isValid(humidity) && <p className="mr-2 select-none">{humidity}</p>}
           {isValid(pressure) && <p className="mr-2 select-none">{pressure}</p>}
         </div>
         <div
           id="PowerInfo"
-          className="flex justify-center  text-[#ccc] select-none text-[14px] font-medium"
+          className="flex justify-start  text-[#ccc] select-none text-[14px] font-medium"
         >
+          {isValid(ch1Power || ch2Power || ch3Power) && <p>Power:</p>}
           {isValid(ch1Power) && <p className="mr-2 select-none">{ch1Power}</p>}
           {isValid(ch2Power) && <p className="mr-2 select-none">{ch2Power}</p>}
           {isValid(ch3Power) && <p className="mr-2 select-none">{ch3Power}</p>}
@@ -112,12 +125,25 @@ function NodeInfoCard({
 
         <div
           id="DeviceInfo"
-          className="select-none  text-[#ccc] flex justify-center text-[14px] font-medium"
+          className="select-none  text-[#ccc] flex justify-start text-[14px] font-medium"
         >
+          <p className="mr-1"> Device:</p>
           <p className="mr-2 select-none">{getHardwareName(hardwareModel)}</p>
+        </div>
+        <div
+          id="DeviceInfo"
+          className="select-none  text-[#ccc] flex justify-start text-[14px] font-medium"
+        >
+          <p className="mr-1">Role:</p>{" "}
           <p className="mr-2 select-none">{getRoleName(role)}</p>
         </div>
       </div>
+      <NodeInfoPopup
+        isOpen={showPopup}
+        onClose={() => {
+          setShowPopup(false);
+        }}
+      />
     </div>
   );
 }
