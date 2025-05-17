@@ -42,7 +42,7 @@ function NodeInfoCard({
   };
 
   const isUpdated = isMqttUpdated({ date: mqttUpdated });
-  const updatedClass = isUpdated ? "bg-[#21b062]" : "bg-[#3b3c36]";
+  const updatedClass = isUpdated ? "bg-[#21b062] " : "bg-[#3b3c36]";
 
   // Conditionally set the font size: larger for emojis, smaller for strings
   const shortNameClass = isEmoji(displayShortName) ? "text-[38px]" : "text-2xl";
@@ -72,11 +72,11 @@ function NodeInfoCard({
   }
 
   return (
-    <div className="bg-[#1b1b1d] w-90 h-24 m-2 p-2 text-white flex">
+    <div className="bg-[#1b1b1d] w-90 h-30 m-2 p-2 text-white flex">
       {/* Left Section: Short Name in a grey circle */}
-      <div className="flex items-center justify-center w-20 h-20 mr-4">
+      <div className="flex items-center justify-center w-20 h-20 ml-3 mr-4">
         <div
-          className={`w-20 h-20 ${updatedClass} border-0 border-solid border-[#333] rounded-full flex items-center justify-center `}
+          className={`w-20 h-20 ${updatedClass} border-0 border-solid border-[#333] rounded-full flex items-center justify-center mt-0 mx-[-5px] mb-[-23px]`}
         >
           <span className={`${shortNameClass} select-none`}>
             {displayShortName}
@@ -86,13 +86,13 @@ function NodeInfoCard({
 
       {/* Right Section: Long Name and Telemetry in a centered column */}
       <div className="flex-1 flex flex-col items-center justify-center">
-        <p className="text-[18px] select-none">{displayLongName}</p>
+        <p className="text-[18px] font-bold select-none">{displayLongName}</p>
         <p id="LastSeen" className="select-none">
-          last seen {lastSeen({ date: mqttUpdated })}
+          Last seen {lastSeen({ date: mqttUpdated })}
         </p>
         <div
           id="EnvInfo"
-          className="flex justify-center text-white select-none"
+          className="flex justify-center text-[#ccc] select-none text-[14px] font-medium"
         >
           {isValid(temp) && <p className="mr-2 select-none">{temp}</p>}
           {isValid(humidity) && <p className="mr-2 select-none">{humidity}</p>}
@@ -100,7 +100,7 @@ function NodeInfoCard({
         </div>
         <div
           id="PowerInfo"
-          className="flex justify-center  text-white select-none"
+          className="flex justify-center  text-[#ccc] select-none text-[14px] font-medium"
         >
           {isValid(ch1Power) && <p className="mr-2 select-none">{ch1Power}</p>}
           {isValid(ch2Power) && <p className="mr-2 select-none">{ch2Power}</p>}
@@ -109,7 +109,7 @@ function NodeInfoCard({
 
         <div
           id="DeviceInfo"
-          className="select-none flex justify-center text-[15px]"
+          className="select-none  text-[#ccc] flex justify-center text-[14px] font-medium"
         >
           <p className="mr-2 select-none">{getHardwareName(hardwareModel)}</p>
           <p className="mr-2 select-none">{getRoleName(role)}</p>
