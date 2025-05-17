@@ -87,7 +87,10 @@ function NodeInfoCard({
       {/* Right Section: Long Name and Telemetry in a centered column */}
       <div className="flex-1 flex flex-col items-center justify-center">
         <p className="text-[18px] font-bold select-none">{displayLongName}</p>
-        <p id="LastSeen" className="select-none">
+        <p
+          id="LastSeen"
+          className="select-none text-[#ccc] text-[14px] font-medium"
+        >
           Last seen {lastSeen({ date: mqttUpdated })}
         </p>
         <div

@@ -29,9 +29,9 @@ const Header = ({ online, offline }: HeaderProps) => {
         <div className="hidden md:block">
           <NodeCount />
         </div>
-        <div className="absolute left-1/2 transform -translate-x-1/2 text-2xl font-bold select-none">
+        {/* <div className="absolute left-1/2 transform -translate-x-1/2 text-2xl font-bold select-none">
           Mesh Metrics @ Valzzu3D
-        </div>
+        </div> */}
         <nav className="hidden md:flex gap-8">
           <a
             href="/"
