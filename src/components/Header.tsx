@@ -24,7 +24,7 @@ const Header = ({ online, offline }: HeaderProps) => {
   );
 
   return (
-    <div className="fixed top-0 left-0 w-full bg-[#1b1b1d] text-white p-4 border-none z-[1000]">
+    <div className="fixed top-0 left-0 w-full bg-[#1b1b1d] text-white p-4 border-none z-10000">
       <div className="flex justify-between items-center">
         <div className="hidden md:block">
           <NodeCount />
@@ -35,13 +35,13 @@ const Header = ({ online, offline }: HeaderProps) => {
         <nav className="hidden md:flex gap-8">
           <a
             href="/"
-            className="text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white px-3 py-2 hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200"
+            className="text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white px-3 py-2 hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200 select-none"
           >
             Home
           </a>
           <a
             href="/map"
-            className="text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white px-3 py-2 hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200"
+            className="text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white px-3 py-2 hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200 select-none"
           >
             Map
           </a>
@@ -62,14 +62,14 @@ const Header = ({ online, offline }: HeaderProps) => {
           <nav className="flex flex-col gap-8">
             <a
               href="/"
-              className="py-2 px-4 text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200"
+              className=" py-2 px-4 text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200 select-none"
               onClick={() => setIsMenuOpen(false)}
             >
               Home
             </a>
             <a
               href="/map"
-              className="py-2 px-4 text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200"
+              className="py-2 px-4 text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200 select-none"
               onClick={() => setIsMenuOpen(false)}
             >
               Map
