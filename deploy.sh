@@ -13,3 +13,5 @@ cp -r ./dist/* /var/www/html/
 
 cp -r ./Backend/* "../MeshMetrics Backend/"
 
+echo restarting backend service
+echo "YOUR_PASSWORD" | sudo -S systemctl restart mesh_metrics.service

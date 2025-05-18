@@ -26,9 +26,9 @@ function NodeInfoCard({
   temp,
   humidity,
   pressure,
-  ch1Power,
-  ch2Power,
-  ch3Power,
+  // ch1Power,
+  // ch2Power,
+  // ch3Power,
   mqttUpdated,
   hardwareModel,
   role,
@@ -44,7 +44,7 @@ function NodeInfoCard({
   const isEmoji = (str: string) => {
     // This regex matches most emojis (Unicode ranges for emoji)
     // biome-ignore lint/suspicious/noMisleadingCharacterClass: <explanation>
-        const emojiRegex = /[\p{Emoji_Presentation}\p{Emoji}\u200D\uFE0F]/u;
+    const emojiRegex = /[\p{Emoji_Presentation}\p{Emoji}\u200D\uFE0F]/u;
     return emojiRegex.test(str) && str.length <= 2; // Ensure it's a single emoji
   };
 
@@ -117,7 +117,7 @@ function NodeInfoCard({
           {isValid(humidity) && <p className="mr-2 select-none">{humidity}</p>}
           {isValid(pressure) && <p className="mr-2 select-none">{pressure}</p>}
         </div>
-        <div
+        {/* <div
           id="PowerInfo"
           className="flex justify-start  text-[#ccc] select-none text-[14px] font-medium"
         >
@@ -125,7 +125,7 @@ function NodeInfoCard({
           {isValid(ch1Power) && <p className="mr-2 select-none">{ch1Power}</p>}
           {isValid(ch2Power) && <p className="mr-2 select-none">{ch2Power}</p>}
           {isValid(ch3Power) && <p className="mr-2 select-none">{ch3Power}</p>}
-        </div>
+        </div> */}
 
         <div
           id="DeviceInfo"

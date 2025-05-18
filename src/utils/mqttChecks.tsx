@@ -30,7 +30,7 @@ export function isMqttUpdated({
   const now = new Date();
   const diff = Math.abs(now.getTime() - date.getTime());
   const diffInMinutes = Math.floor(diff / (1000 * 60));
-  return diffInMinutes < 60; // Check if the update was within the last hour
+  return diffInMinutes < 180; // Check if the update was within the last 3 hours
 }
 
 interface DateStatus {

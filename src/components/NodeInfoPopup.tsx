@@ -13,6 +13,9 @@ interface NodeInfoPopupProps {
 function NodeInfoPopup({ id, isOpen, onClose }: NodeInfoPopupProps) {
   if (!isOpen) return null;
 
+  const isValid = (value: string) =>
+    value && value !== "N/A" && value.trim() !== "";
+
   // State to hold node data and loading status
   const [nodeData, setNodeData] = useState<NodeData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +43,25 @@ function NodeInfoPopup({ id, isOpen, onClose }: NodeInfoPopupProps) {
     fetchNodeData();
   }, [id]);
 
+  const ch1Power =
+    nodeData &&
+    nodeData.telemetry?.voltage_ch1 !== undefined &&
+    nodeData.telemetry?.current_ch1 !== null
+      ? `${nodeData.telemetry.voltage_ch1}V ${nodeData.telemetry.current_ch1}mA`
+      : "0V 0mA";
+  const ch2Power =
+    nodeData &&
+    nodeData?.telemetry?.voltage_ch2 !== undefined &&
+    nodeData?.telemetry?.current_ch2 !== null
+      ? `${nodeData.telemetry.voltage_ch2}V ${nodeData.telemetry.current_ch2}mA`
+      : "0V 0mA";
+  const ch3Power =
+    nodeData &&
+    nodeData?.telemetry?.voltage_ch3 !== undefined &&
+    nodeData?.telemetry?.current_ch3 !== null
+      ? `${nodeData.telemetry.voltage_ch3}V ${nodeData.telemetry.current_ch3}mA`
+      : "0V 0mA";
+
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
@@ -51,7 +73,7 @@ function NodeInfoPopup({ id, isOpen, onClose }: NodeInfoPopupProps) {
     >
       {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
       <div
-        className="bg-[#1b1b1d] p-6 rounded shadow-lg w-80 relative"
+        className="bg-[#1b1b1d] p-6 rounded shadow-lg w-80 relative "
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button in top-right corner */}
@@ -92,7 +114,7 @@ function NodeInfoPopup({ id, isOpen, onClose }: NodeInfoPopupProps) {
               />
             </div>
           ) : nodeData ? (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 justify-start text-left">
               <h2 className="text-[24px] font-bold select-none">
                 {nodeData.longName} | {nodeData.shortName}
               </h2>
@@ -105,15 +127,27 @@ function NodeInfoPopup({ id, isOpen, onClose }: NodeInfoPopupProps) {
                       : new Date(0),
                   })}
                 </p>
-                <p>
-                  env: {nodeData.telemetry.temperature}°C{" "}
-                  {nodeData.telemetry.relative_humidity}%{" "}
-                  {nodeData.telemetry.barometric_pressure}hPa
-                </p>
+                <div>
+                  {isValid(String(nodeData.telemetry.temperature)) && (
+                    <p className="mr-2 select-none">
+                      Temp: {nodeData.telemetry.temperature}°C
+                    </p>
+                  )}
+                  {isValid(String(nodeData.telemetry.relative_humidity)) && (
+                    <p className="mr-2 select-none">
+                      Humidity: {nodeData.telemetry.relative_humidity}%
+                    </p>
+                  )}
+                  {isValid(String(nodeData.telemetry.barometric_pressure)) && (
+                    <p className="mr-2 select-none">
+                      Pressure: {nodeData.telemetry.barometric_pressure}hPa
+                    </p>
+                  )}
+                </div>
                 <h5>Power telemetry: </h5>
-                <p>ch1: 4V 400mA</p>
-                <p>ch2: 4V 100mA</p>
-                <p>ch3: 24V 500mA</p>
+                <p>ch1: {ch1Power}</p>
+                <p>ch2: {ch2Power}</p>
+                <p>ch3: {ch3Power}</p>
               </div>
             </div>
           ) : (
