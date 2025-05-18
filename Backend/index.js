@@ -8,6 +8,7 @@ dotenv.config();
 // Import schemas from schemas folder
 const NodeInfo = require("./schemas/nodeinfo");
 const Telemetry = require("./schemas/telemetry");
+const { format } = require("path");
 
 const app = express();
 app.use(express.json());
@@ -97,12 +98,12 @@ async function getNodesData() {
               white_lux: nodeTelemetry.white_lux,
               wind_direction: nodeTelemetry.wind_direction,
               wind_speed: nodeTelemetry.wind_speed,
-              current_ch1: nodeTelemetry.current_ch1,
-              current_ch2: nodeTelemetry.current_ch2,
-              current_ch3: nodeTelemetry.current_ch3,
-              voltage_ch1: nodeTelemetry.voltage_ch1,
-              voltage_ch2: nodeTelemetry.voltage_ch2,
-              voltage_ch3: nodeTelemetry.voltage_ch3,
+              current_ch1: formatNumber(nodeTelemetry.current_ch1, 1),
+              current_ch2: formatNumber(nodeTelemetry.current_ch2, 1),
+              current_ch3: formatNumber(nodeTelemetry.current_ch3, 1),
+              voltage_ch1: formatNumber(nodeTelemetry.voltage_ch1, 1),
+              voltage_ch2: formatNumber(nodeTelemetry.voltage_ch2, 1),
+              voltage_ch3: formatNumber(nodeTelemetry.voltage_ch3, 1),
             }
           : {},
         from: info.from,
@@ -164,12 +165,12 @@ app.get("/api/nodes/:id", async (req, res) => {
           white_lux: nodeTelemetry.white_lux,
           wind_direction: nodeTelemetry.wind_direction,
           wind_speed: nodeTelemetry.wind_speed,
-          current_ch1: nodeTelemetry.current_ch1,
-          current_ch2: nodeTelemetry.current_ch2,
-          current_ch3: nodeTelemetry.current_ch3,
-          voltage_ch1: nodeTelemetry.voltage_ch1,
-          voltage_ch2: nodeTelemetry.voltage_ch2,
-          voltage_ch3: nodeTelemetry.voltage_ch3,
+          current_ch1: formatNumber(nodeTelemetry.current_ch1, 1),
+          current_ch2: formatNumber(nodeTelemetry.current_ch2, 1),
+          current_ch3: formatNumber(nodeTelemetry.current_ch3, 1),
+          voltage_ch1: formatNumber(nodeTelemetry.voltage_ch1, 1),
+          voltage_ch2: formatNumber(nodeTelemetry.voltage_ch2, 1),
+          voltage_ch3: formatNumber(nodeTelemetry.voltage_ch3, 1),
         }
       : {},
     from: nodeInfo.from,
