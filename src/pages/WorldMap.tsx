@@ -9,12 +9,13 @@ import {
 import "leaflet/dist/leaflet.css";
 //import L from "leaflet";
 
-import { NodeData } from "../utils/NodeData";
+import type { NodeData } from "../utils/NodeData";
 import { isMqttUpdated } from "../utils/mqttChecks";
-import NodeInfoPopup from "../components/NodeInfoPopup";
+// import NodeInfoPopup from "../components/NodeInfoPopup";
 
 // Define the shape of a marker
 interface Marker {
+  id: string;
   long_name: string;
   short_name: string;
   coordinates: [number, number]; // [latitude, longitude]
@@ -64,7 +65,7 @@ interface WorldMapProps {
 // };
 
 const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
-  const [showPopup, setShowPopup] = useState(false);
+  // const [showPopup, setShowPopup] = useState(false);
 
   const map = useMap();
   const [radius, setRadius] = useState(6); // Base radius at default zoom
@@ -74,7 +75,7 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
     const updateRadius = () => {
       const currentZoom = map.getZoom();
       // Scale radius linearly: radius = baseRadius * (currentZoom / baseZoom)
-      const newRadius = 5 * Math.pow(1.2, currentZoom - baseZoom);
+      const newRadius = 5 * 1.2 ** (currentZoom - baseZoom);
       setRadius(Math.min(15, Math.max(6, newRadius)));
     };
 
@@ -92,14 +93,8 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
 
   return (
     <>
-      <NodeInfoPopup
-        isOpen={showPopup}
-        onClose={() => {
-          setShowPopup(false);
-        }}
-      />
       {markers.map(
-        ({ long_name, short_name, coordinates, mqttUpdated }, index) => {
+        ({ id, long_name, short_name, coordinates, mqttUpdated }, index) => {
           const [lat, lon] = coordinates;
           const isUpdated = isMqttUpdated({
             date: mqttUpdated ? new Date(mqttUpdated) : undefined,
@@ -109,8 +104,8 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
           if (
             typeof lat !== "number" ||
             typeof lon !== "number" ||
-            isNaN(lat) ||
-            isNaN(lon) ||
+            Number.isNaN(lat) ||
+            Number.isNaN(lon) ||
             lat < -90 ||
             lat > 90 ||
             lon < -180 ||
@@ -131,9 +126,9 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
               weight={1}
               fillOpacity={1}
               eventHandlers={{
-                click: () => {
-                  setShowPopup(true);
-                },
+                // click: () => {
+                //   setShowPopup(true);
+                // },
                 mouseover: (e) => {
                   e.target.setStyle({
                     radius: radius * 1.6,
@@ -149,6 +144,13 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
               }}
             >
               <Tooltip>{`${long_name} - ${short_name}`}</Tooltip>
+              {/* <NodeInfoPopup
+                id={id}
+                isOpen={showPopup}
+                onClose={() => {
+                  setShowPopup(false);
+                }}
+              /> */}
             </CircleMarker>
           );
         }
@@ -164,7 +166,7 @@ function WorldMap({ nodes }: WorldMapProps) {
       (node) => node.longitude !== undefined && node.latitude !== undefined
     )
     .map((node) => {
-      const { longName, shortName, latitude, longitude, mqtt_updated_at } =
+      const { id, longName, shortName, latitude, longitude, mqtt_updated_at } =
         node;
       // Convert from microdegrees to decimal degrees (fixed divisor)
 
@@ -173,6 +175,7 @@ function WorldMap({ nodes }: WorldMapProps) {
       // Log for debugging
       //console.log(`Node: ${longName || "Unknown"} - Lat: ${lat}, Lon: ${lon}`);
       return {
+        id: id?.toString() || "Unknown",
         long_name: longName || "Unknown",
         short_name: shortName || "????",
         coordinates: [lat, lon], // [latitude, longitude]

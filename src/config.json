@@ -1,4 +1,3 @@
 {
-  "api_url": "https://api.meshmetrics.valzzu3d.fi",
-  "api_url_local": "http://localhost:8888"
+  "api_url": "http://localhost:8888"
 }

@@ -1,12 +1,13 @@
 import { Zoomies } from "ldrs/react";
 import NodeInfoCard from "../components/NodeInfoCard";
 import { sortMqttDates } from "../utils/mqttChecks";
+import type { NodeData } from "../utils/NodeData";
 
 interface HeaderProps {
-  nodes: any[]; // Replace 'any' with the actual type of your nodes
+  nodes: NodeData[]; // Replace 'any' with the actual type of your nodes
 }
 
-function Main({ nodes }: HeaderProps) {
+function NodeCards({ nodes }: HeaderProps) {
   const sortedNodes = [...nodes].sort((a, b) => {
     const aOnline =
       sortMqttDates([a.mqtt_updated_at ? new Date(a.mqtt_updated_at) : null])
@@ -27,6 +28,7 @@ function Main({ nodes }: HeaderProps) {
             key={node.id}
             longName={node.longName}
             shortName={node.shortName}
+            id={node.id}
             temp={
               node.telemetry?.temperature !== undefined
                 ? `${node.telemetry.temperature}°C`
@@ -65,8 +67,14 @@ function Main({ nodes }: HeaderProps) {
                 ? new Date(node.mqtt_updated_at)
                 : new Date(0) // Fallback to epoch date
             }
-            hardwareModel={node.hardware_model}
-            role={node.role}
+            hardwareModel={
+              node.hardware_model !== undefined
+                ? Number(node.hardware_model)
+                : undefined
+            }
+            role={node.role !== undefined ? Number(node.role) : undefined}
+            latitude={node.latitude}
+            longitude={node.longitude}
           />
         ))
       ) : (
@@ -85,4 +93,4 @@ function Main({ nodes }: HeaderProps) {
   );
 }
 
-export default Main;
+export default NodeCards;

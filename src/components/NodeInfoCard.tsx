@@ -5,6 +5,7 @@ import NodeInfoPopup from "../components/NodeInfoPopup";
 import { useState } from "react";
 
 interface NodeInfoProps {
+  id: string;
   longName: string;
   shortName: string;
   temp: string;
@@ -16,20 +17,25 @@ interface NodeInfoProps {
   mqttUpdated: Date;
   hardwareModel?: number;
   role?: number;
+  latitude?: number;
+  longitude?: number;
 }
 
 function NodeInfoCard({
+  id,
   longName,
   shortName,
   temp,
   humidity,
   pressure,
-  ch1Power,
-  ch2Power,
-  ch3Power,
+  // ch1Power,
+  // ch2Power,
+  // ch3Power,
   mqttUpdated,
   hardwareModel,
   role,
+  latitude,
+  longitude,
 }: NodeInfoProps) {
   const [showPopup, setShowPopup] = useState(false);
 
@@ -41,6 +47,7 @@ function NodeInfoCard({
   // Function to detect if the string is an emoji
   const isEmoji = (str: string) => {
     // This regex matches most emojis (Unicode ranges for emoji)
+    // biome-ignore lint/suspicious/noMisleadingCharacterClass: <explanation>
     const emojiRegex = /[\p{Emoji_Presentation}\p{Emoji}\u200D\uFE0F]/u;
     return emojiRegex.test(str) && str.length <= 2; // Ensure it's a single emoji
   };
@@ -76,6 +83,7 @@ function NodeInfoCard({
   }
 
   return (
+    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
       className="bg-[#1b1b1d] w-90 h-30 m-2 p-2 text-white flex hover:border-[#2a9d5f] hover:border-2 rounded-lg shadow-md "
       onClick={() => {
@@ -95,7 +103,17 @@ function NodeInfoCard({
 
       {/* Right Section: Long Name and Telemetry in a centered column */}
       <div className="flex-1 flex flex-col justify-start text-left">
-        <p className="text-[18px] font-bold select-none">{displayLongName}</p>
+        {longitude && latitude ? (
+          <a
+            className="text-[18px] font-bold select-none"
+            href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
+          >
+            {displayLongName}
+          </a>
+        ) : (
+          <p className="text-[18px] font-bold select-none">{displayLongName}</p>
+        )}
+
         <p
           id="LastSeen"
           className="select-none text-[#ccc] text-[14px] font-medium text-left"
@@ -113,7 +131,7 @@ function NodeInfoCard({
           {isValid(humidity) && <p className="mr-2 select-none">{humidity}</p>}
           {isValid(pressure) && <p className="mr-2 select-none">{pressure}</p>}
         </div>
-        <div
+        {/* <div
           id="PowerInfo"
           className="flex justify-start  text-[#ccc] select-none text-[14px] font-medium"
         >
@@ -121,7 +139,7 @@ function NodeInfoCard({
           {isValid(ch1Power) && <p className="mr-2 select-none">{ch1Power}</p>}
           {isValid(ch2Power) && <p className="mr-2 select-none">{ch2Power}</p>}
           {isValid(ch3Power) && <p className="mr-2 select-none">{ch3Power}</p>}
-        </div>
+        </div> */}
 
         <div
           id="DeviceInfo"
@@ -139,6 +157,7 @@ function NodeInfoCard({
         </div>
       </div>
       <NodeInfoPopup
+        id={id}
         isOpen={showPopup}
         onClose={() => {
           setShowPopup(false);
