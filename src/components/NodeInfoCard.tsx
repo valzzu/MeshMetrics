@@ -1,49 +1,49 @@
 import { memo } from "react";
 import { lastSeen, isMqttUpdated } from "../utils/mqttChecks";
+import type { NodeData } from "../utils/NodeData";
 import { HardwareModel, Role } from "../utils/NodeData";
-import NodeInfoPopup from "../components/NodeInfoPopup";
 import { useState } from "react";
 
-interface NodeInfoProps {
-  id: string;
-  longName: string;
-  shortName: string;
-  temp: string;
-  humidity: string;
-  pressure: string;
-  ch1Power: string;
-  ch2Power: string;
-  ch3Power: string;
-  mqttUpdated: Date;
-  hardwareModel?: number;
-  role?: number;
-  latitude?: number;
-  longitude?: number;
-}
+type NodeInfoCardProps = {
+  node: NodeData;
+  onOpenPopup?: () => void;
+};
 
-function NodeInfoCard({
-  id,
-  longName,
-  shortName,
-  temp,
-  humidity,
-  pressure,
-  // ch1Power,
-  // ch2Power,
-  // ch3Power,
-  mqttUpdated,
-  hardwareModel,
-  role,
-  latitude,
-  longitude,
-}: NodeInfoProps) {
-  const [showPopup, setShowPopup] = useState(false);
+function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
+  const temp =
+    node.telemetry?.temperature !== undefined
+      ? `${node.telemetry.temperature}°C`
+      : "N/A";
+
+  const humidity =
+    node.telemetry?.relative_humidity !== undefined
+      ? `${node.telemetry.relative_humidity}%`
+      : "N/A";
+
+  const pressure =
+    node.telemetry?.barometric_pressure !== undefined
+      ? `${node.telemetry.barometric_pressure}hPa`
+      : "N/A";
+
+  const mqttUpdated = node.mqtt_updated_at
+    ? new Date(node.mqtt_updated_at)
+    : new Date(0); // Fallback to epoch date
+
+  const hardwareModel =
+    node.hardware_model !== undefined ? Number(node.hardware_model) : undefined;
+
+  const role = node.role !== undefined ? Number(node.role) : undefined;
+  const latitude =
+    node.latitude !== undefined ? node.latitude / 1_000_0000 : undefined;
+
+  const longitude =
+    node.longitude !== undefined ? node.longitude / 1_000_0000 : undefined;
 
   const isValid = (value: string) =>
     value && value !== "N/A" && value.trim() !== "";
 
-  const displayShortName = isValid(shortName) ? shortName : "????";
-  const displayLongName = isValid(longName) ? longName : "Unknown";
+  const displayShortName = isValid(node.shortName) ? node.shortName : "????";
+  const displayLongName = isValid(node.longName) ? node.longName : "Unknown";
   // Function to detect if the string is an emoji
   const isEmoji = (str: string) => {
     // This regex matches most emojis (Unicode ranges for emoji)
@@ -85,9 +85,9 @@ function NodeInfoCard({
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
-      className="bg-[#1b1b1d] w-90 h-30 m-2 p-2 text-white flex hover:border-[#2a9d5f] hover:border-2 rounded-lg shadow-md "
+      className=" w-90 h-30 m-2 p-2 text-white flex hover:border-[#2a9d5f] hover:border-2 rounded-lg shadow-md "
       onClick={() => {
-        setShowPopup(true);
+        if (onOpenPopup) onOpenPopup();
       }}
     >
       {/* Left Section: Short Name in a grey circle */}
@@ -110,6 +110,7 @@ function NodeInfoCard({
               latitude / 1_000_0000
             },${longitude / 1_000_0000}`}
             target="_blank"
+            rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()} // Prevent popup on link click
           >
             {displayLongName}
@@ -135,15 +136,6 @@ function NodeInfoCard({
           {isValid(humidity) && <p className="mr-2 select-none">{humidity}</p>}
           {isValid(pressure) && <p className="mr-2 select-none">{pressure}</p>}
         </div>
-        {/* <div
-          id="PowerInfo"
-          className="flex justify-start  text-[#ccc] select-none text-[14px] font-medium"
-        >
-          {isValid(ch1Power || ch2Power || ch3Power) && <p>Power:</p>}
-          {isValid(ch1Power) && <p className="mr-2 select-none">{ch1Power}</p>}
-          {isValid(ch2Power) && <p className="mr-2 select-none">{ch2Power}</p>}
-          {isValid(ch3Power) && <p className="mr-2 select-none">{ch3Power}</p>}
-        </div> */}
 
         <div
           id="DeviceInfo"
@@ -160,13 +152,6 @@ function NodeInfoCard({
           <p className="mr-2 select-none">{getRoleName(role)}</p>
         </div>
       </div>
-      <NodeInfoPopup
-        id={id}
-        isOpen={showPopup}
-        onClose={() => {
-          setShowPopup(false);
-        }}
-      />
     </div>
   );
 }
