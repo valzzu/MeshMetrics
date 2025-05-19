@@ -17,6 +17,8 @@ interface NodeInfoProps {
   mqttUpdated: Date;
   hardwareModel?: number;
   role?: number;
+  latitude?: number;
+  longitude?: number;
 }
 
 function NodeInfoCard({
@@ -32,6 +34,8 @@ function NodeInfoCard({
   mqttUpdated,
   hardwareModel,
   role,
+  latitude,
+  longitude,
 }: NodeInfoProps) {
   const [showPopup, setShowPopup] = useState(false);
 
@@ -99,7 +103,17 @@ function NodeInfoCard({
 
       {/* Right Section: Long Name and Telemetry in a centered column */}
       <div className="flex-1 flex flex-col justify-start text-left">
-        <p className="text-[18px] font-bold select-none">{displayLongName}</p>
+        {longitude && latitude ? (
+          <a
+            className="text-[18px] font-bold select-none"
+            href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
+          >
+            {displayLongName}
+          </a>
+        ) : (
+          <p className="text-[18px] font-bold select-none">{displayLongName}</p>
+        )}
+
         <p
           id="LastSeen"
           className="select-none text-[#ccc] text-[14px] font-medium text-left"

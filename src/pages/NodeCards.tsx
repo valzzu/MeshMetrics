@@ -73,9 +73,11 @@ function NodeCards({ nodes }: HeaderProps) {
                 : undefined
             }
             role={node.role !== undefined ? Number(node.role) : undefined}
+            latitude={node.latitude}
+            longitude={node.longitude}
           />
         ))
-        ) : (
+      ) : (
         <div className="justify-center content-center select-none">
           <p>Loading nodes</p>
           <Zoomies
@@ -86,7 +88,7 @@ function NodeCards({ nodes }: HeaderProps) {
             color="white"
           />
         </div>
-      )} 
+      )}
     </div>
   );
 }
