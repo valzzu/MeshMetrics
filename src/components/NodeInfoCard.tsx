@@ -106,7 +106,9 @@ function NodeInfoCard({
         {longitude && latitude ? (
           <a
             className="text-[18px] font-bold select-none"
-            href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
+            href={`https://www.google.com/maps/search/?q=${
+              latitude / 1_000_0000
+            },${longitude / 1_000_0000}`}
           >
             {displayLongName}
           </a>
