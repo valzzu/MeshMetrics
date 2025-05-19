@@ -109,6 +109,8 @@ function NodeInfoCard({
             href={`https://www.google.com/maps/search/?q=${
               latitude / 1_000_0000
             },${longitude / 1_000_0000}`}
+            target="_blank"
+            onClick={(e) => e.stopPropagation()} // Prevent popup on link click
           >
             {displayLongName}
           </a>
