@@ -94,7 +94,7 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
   return (
     <>
       {markers.map(
-        ({ id, long_name, short_name, coordinates, mqttUpdated }, index) => {
+        ({ long_name, short_name, coordinates, mqttUpdated }, index) => {
           const [lat, lon] = coordinates;
           const isUpdated = isMqttUpdated({
             date: mqttUpdated ? new Date(mqttUpdated) : undefined,
