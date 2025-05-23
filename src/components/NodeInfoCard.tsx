@@ -1,8 +1,7 @@
 import { memo } from "react";
 import { lastSeen, isMqttUpdated } from "../utils/mqttChecks";
 import type { NodeData } from "../utils/NodeData";
-import { HardwareModel, Role } from "../utils/NodeData";
-import { useState } from "react";
+import { getHardwareName, getRoleName } from "../utils/NodeData";
 
 type NodeInfoCardProps = {
   node: NodeData;
@@ -59,29 +58,6 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
   const shortNameClass = isEmoji(displayShortName) ? "text-[38px]" : "text-2xl";
   0;
 
-  function getHardwareName(id: number | undefined): string {
-    if (id === undefined) {
-      return "Unknown Hardware";
-    }
-    const hardware_model = HardwareModel[id];
-    if (!hardware_model) {
-      return "Unknown Hardware";
-    }
-    return hardware_model.split("_").join(" ");
-  }
-
-  function getRoleName(id: number | undefined): string {
-    if (id === undefined) {
-      return "Unknown Role";
-    }
-
-    const hardware_model = Role[id];
-    if (!hardware_model) {
-      return "Unknown Role";
-    }
-    return hardware_model.split("_").join(" ");
-  }
-
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
@@ -106,9 +82,7 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
         {longitude && latitude ? (
           <a
             className="text-[18px] font-bold select-none"
-            href={`https://www.google.com/maps/search/?q=${
-              latitude / 1_000_0000
-            },${longitude / 1_000_0000}`}
+            href={`https://www.google.com/maps/search/?q=${latitude},${longitude}`}
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()} // Prevent popup on link click

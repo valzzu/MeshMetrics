@@ -1,4 +1,6 @@
 import type { NodeData } from "../utils/NodeData";
+import { getHardwareName, getRoleName } from "../utils/NodeData";
+
 import { lastSeen } from "../utils/mqttChecks";
 
 interface NodeInfoPopupProps {
@@ -11,24 +13,39 @@ function NodeInfoPopup({ node, onClose }: NodeInfoPopupProps) {
   const isValid = (value: string) =>
     value && value !== "N/A" && value.trim() !== "";
 
+  const temp =
+    node.telemetry?.temperature !== undefined
+      ? `${node.telemetry.temperature}°C`
+      : "N/A";
+
+  const humidity =
+    node.telemetry?.relative_humidity !== undefined
+      ? `${node.telemetry.relative_humidity}%`
+      : "N/A";
+
+  const pressure =
+    node.telemetry?.barometric_pressure !== undefined
+      ? `${node.telemetry.barometric_pressure}hPa`
+      : "N/A";
+
   const ch1Power =
     node &&
     node.telemetry?.voltage_ch1 !== undefined &&
     node.telemetry?.current_ch1 !== null
       ? `${node.telemetry.voltage_ch1}V ${node.telemetry.current_ch1}mA`
-      : "0V 0mA";
+      : "N/A";
   const ch2Power =
     node &&
     node?.telemetry?.voltage_ch2 !== undefined &&
     node?.telemetry?.current_ch2 !== null
       ? `${node.telemetry.voltage_ch2}V ${node.telemetry.current_ch2}mA`
-      : "0V 0mA";
+      : "N/A";
   const ch3Power =
     node &&
     node?.telemetry?.voltage_ch3 !== undefined &&
     node?.telemetry?.current_ch3 !== null
       ? `${node.telemetry.voltage_ch3}V ${node.telemetry.current_ch3}mA`
-      : "0V 0mA";
+      : "N/A";
 
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
@@ -83,27 +100,43 @@ function NodeInfoPopup({ node, onClose }: NodeInfoPopupProps) {
                     : new Date(0),
                 })}
               </p>
+              <p>
+                Hardware:{" "}
+                {getHardwareName(
+                  typeof node.hardware_model === "number"
+                    ? node.hardware_model
+                    : Number.isNaN(Number(node.hardware_model))
+                    ? undefined
+                    : Number(node.hardware_model)
+                )}
+              </p>
+              <p>
+                Role:{" "}
+                {getRoleName(
+                  typeof node.role === "number"
+                    ? node.role
+                    : Number.isNaN(Number(node.role))
+                    ? undefined
+                    : Number(node.role)
+                )}
+              </p>
               <div>
-                {isValid(String(node.telemetry.temperature)) && (
-                  <p className="mr-2 select-none">
-                    Temp: {node.telemetry.temperature}°C
-                  </p>
+                {isValid(temp) && (
+                  <p className="mr-2 select-none">Temp: {temp}</p>
                 )}
-                {isValid(String(node.telemetry.relative_humidity)) && (
-                  <p className="mr-2 select-none">
-                    Humidity: {node.telemetry.relative_humidity}%
-                  </p>
+                {isValid(humidity) && (
+                  <p className="mr-2 select-none">Humidity: {humidity}</p>
                 )}
-                {isValid(String(node.telemetry.barometric_pressure)) && (
-                  <p className="mr-2 select-none">
-                    Pressure: {node.telemetry.barometric_pressure}hPa
-                  </p>
+                {isValid(pressure) && (
+                  <p className="mr-2 select-none">Pressure: {pressure}</p>
                 )}
               </div>
-              <h5>Power telemetry: </h5>
-              <p>ch1: {ch1Power}</p>
-              <p>ch2: {ch2Power}</p>
-              <p>ch3: {ch3Power}</p>
+              {isValid(ch1Power || ch2Power || ch3Power) && (
+                <h5>Power telemetry: </h5>
+              )}
+              {isValid(ch1Power) && <p>ch1: {ch1Power}</p>}
+              {isValid(ch2Power) && <p>ch2: {ch2Power}</p>}
+              {isValid(ch3Power) && <p>ch3: {ch3Power}</p>}
             </div>
           </div>
         </div>

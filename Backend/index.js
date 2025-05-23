@@ -8,7 +8,6 @@ dotenv.config();
 // Import schemas from schemas folder
 const NodeInfo = require("./schemas/nodeinfo");
 const Telemetry = require("./schemas/telemetry");
-const { format } = require("path");
 
 const app = express();
 app.use(express.json());
