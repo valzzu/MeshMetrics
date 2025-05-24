@@ -50,7 +50,7 @@ function NodeInfoPopup({ node, onClose }: NodeInfoPopupProps) {
   //check if battery level is 101 if so set text to PWRD (oiwered over usb)
   const batteryLevel =
     node.telemetry?.battery_level !== undefined
-      ? node.telemetry.battery_level === 101
+      ? Number(node.telemetry.battery_level) === 101
         ? "PWRD"
         : `${node.telemetry.battery_level}%`
       : "N/A";
@@ -101,7 +101,8 @@ function NodeInfoPopup({ node, onClose }: NodeInfoPopupProps) {
             </h2>
             <div>
               <p className="mr-2 select-none">
-                {node.telemetry.voltage}V | {batteryLevel}
+                {Number.parseFloat(Number(node.telemetry?.voltage).toFixed(2))}V
+                | {batteryLevel}
               </p>
               <p className="mr-2 select-none">
                 Active:{" "}
