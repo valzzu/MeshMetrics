@@ -118,7 +118,7 @@ const ZoomScaledMarkers: React.FC<{ markers: Marker[] }> = ({ markers }) => {
           }
           return (
             <CircleMarker
-              key={index}
+              key={markers[index].id}
               center={coordinates}
               radius={radius} // Use zoom-adjusted radius
               fillColor={notHovering}
@@ -170,8 +170,8 @@ function WorldMap({ nodes }: WorldMapProps) {
         node;
       // Convert from microdegrees to decimal degrees (fixed divisor)
 
-      const lat = latitude! / 1_000_0000;
-      const lon = longitude! / 1_000_0000;
+      const lat = latitude !== undefined ? latitude / 1_000_0000 : 0;
+      const lon = longitude !== undefined ? longitude / 1_000_0000 : 0;
       // Log for debugging
       //console.log(`Node: ${longName || "Unknown"} - Lat: ${lat}, Lon: ${lon}`);
       return {

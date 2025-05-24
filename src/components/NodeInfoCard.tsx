@@ -1,49 +1,48 @@
 import { memo } from "react";
 import { lastSeen, isMqttUpdated } from "../utils/mqttChecks";
-import { HardwareModel, Role } from "../utils/NodeData";
-import NodeInfoPopup from "../components/NodeInfoPopup";
-import { useState } from "react";
+import type { NodeData } from "../utils/NodeData";
+import { getHardwareName, getRoleName } from "../utils/NodeData";
 
-interface NodeInfoProps {
-  id: string;
-  longName: string;
-  shortName: string;
-  temp: string;
-  humidity: string;
-  pressure: string;
-  ch1Power: string;
-  ch2Power: string;
-  ch3Power: string;
-  mqttUpdated: Date;
-  hardwareModel?: number;
-  role?: number;
-  latitude?: number;
-  longitude?: number;
-}
+type NodeInfoCardProps = {
+  node: NodeData;
+  onOpenPopup?: () => void;
+};
 
-function NodeInfoCard({
-  id,
-  longName,
-  shortName,
-  temp,
-  humidity,
-  pressure,
-  // ch1Power,
-  // ch2Power,
-  // ch3Power,
-  mqttUpdated,
-  hardwareModel,
-  role,
-  latitude,
-  longitude,
-}: NodeInfoProps) {
-  const [showPopup, setShowPopup] = useState(false);
+function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
+  const temp =
+    node.telemetry?.temperature !== undefined
+      ? `${node.telemetry.temperature}°C`
+      : "N/A";
+
+  const humidity =
+    node.telemetry?.relative_humidity !== undefined
+      ? `${node.telemetry.relative_humidity}%`
+      : "N/A";
+
+  const pressure =
+    node.telemetry?.barometric_pressure !== undefined
+      ? `${node.telemetry.barometric_pressure}hPa`
+      : "N/A";
+
+  const mqttUpdated = node.mqtt_updated_at
+    ? new Date(node.mqtt_updated_at)
+    : new Date(0); // Fallback to epoch date
+
+  const hardwareModel =
+    node.hardware_model !== undefined ? Number(node.hardware_model) : undefined;
+
+  const role = node.role !== undefined ? Number(node.role) : undefined;
+  const latitude =
+    node.latitude !== undefined ? node.latitude / 1_000_0000 : undefined;
+
+  const longitude =
+    node.longitude !== undefined ? node.longitude / 1_000_0000 : undefined;
 
   const isValid = (value: string) =>
     value && value !== "N/A" && value.trim() !== "";
 
-  const displayShortName = isValid(shortName) ? shortName : "????";
-  const displayLongName = isValid(longName) ? longName : "Unknown";
+  const displayShortName = isValid(node.shortName) ? node.shortName : "????";
+  const displayLongName = isValid(node.longName) ? node.longName : "Unknown";
   // Function to detect if the string is an emoji
   const isEmoji = (str: string) => {
     // This regex matches most emojis (Unicode ranges for emoji)
@@ -59,37 +58,36 @@ function NodeInfoCard({
   const shortNameClass = isEmoji(displayShortName) ? "text-[38px]" : "text-2xl";
   0;
 
-  function getHardwareName(id: number | undefined): string {
-    if (id === undefined) {
-      return "Unknown Hardware";
-    }
-    const hardware_model = HardwareModel[id];
-    if (!hardware_model) {
-      return "Unknown Hardware";
-    }
-    return hardware_model.split("_").join(" ");
-  }
-
-  function getRoleName(id: number | undefined): string {
-    if (id === undefined) {
-      return "Unknown Role";
-    }
-
-    const hardware_model = Role[id];
-    if (!hardware_model) {
-      return "Unknown Role";
-    }
-    return hardware_model.split("_").join(" ");
-  }
-
   return (
-    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
-      className="bg-[#1b1b1d] w-90 h-30 m-2 p-2 text-white flex hover:border-[#2a9d5f] hover:border-2 rounded-lg shadow-md "
+      className="relative w-90 h-30 m-2 p-2 bg-[#1b1b1d] text-white flex hover:border-[#2a9d5f] hover:border-2 rounded-lg shadow-md"
       onClick={() => {
-        setShowPopup(true);
+        if (onOpenPopup) onOpenPopup();
+      }}
+      onKeyUp={(e) => {
+        if ((e.key === "Enter" || e.key === " ") && onOpenPopup) {
+          onOpenPopup();
+        }
       }}
     >
+      {/* Location icon in the top-right corner */}
+      {longitude && latitude && (
+        <a
+          className="absolute bottom-2 right-2 sele§ct-none hover:scale-125 transition-transform duration-170 ease-in-out"
+          id="location-icon"
+          href={`https://www.google.com/maps/search/?q=${latitude},${longitude}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <img
+            src="location.svg"
+            alt="Position Icon"
+            className="text-white w-6 h-6"
+          />
+        </a>
+      )}
+
       {/* Left Section: Short Name in a grey circle */}
       <div className="flex items-center justify-center w-20 h-20 ml-3 mr-4">
         <div
@@ -101,33 +99,14 @@ function NodeInfoCard({
         </div>
       </div>
 
-      {/* Right Section: Long Name and Telemetry in a centered column */}
+      {/* Right Section: Long Name and Telemetry */}
       <div className="flex-1 flex flex-col justify-start text-left">
-        {longitude && latitude ? (
-          <a
-            className="text-[18px] font-bold select-none"
-            href={`https://www.google.com/maps/search/?q=${
-              latitude / 1_000_0000
-            },${longitude / 1_000_0000}`}
-            target="_blank"
-            onClick={(e) => e.stopPropagation()} // Prevent popup on link click
-          >
-            {displayLongName}
-          </a>
-        ) : (
-          <p className="text-[18px] font-bold select-none">{displayLongName}</p>
-        )}
-
-        <p
-          id="LastSeen"
-          className="select-none text-[#ccc] text-[14px] font-medium text-left"
-        >
+        <p className="text-[18px] font-bold select-none">{displayLongName}</p>
+        <p className="select-none text-[#ccc] text-[14px] font-medium text-left">
           Active: {lastSeen({ date: mqttUpdated })}
         </p>
-        <div
-          id="EnvInfo"
-          className="flex justify-start text-[#ccc] select-none text-[14px] font-medium"
-        >
+
+        <div className="flex justify-start text-[#ccc] select-none text-[14px] font-medium">
           {isValid(temp || humidity || pressure) && (
             <p className="mr-1">Env:</p>
           )}
@@ -135,38 +114,17 @@ function NodeInfoCard({
           {isValid(humidity) && <p className="mr-2 select-none">{humidity}</p>}
           {isValid(pressure) && <p className="mr-2 select-none">{pressure}</p>}
         </div>
-        {/* <div
-          id="PowerInfo"
-          className="flex justify-start  text-[#ccc] select-none text-[14px] font-medium"
-        >
-          {isValid(ch1Power || ch2Power || ch3Power) && <p>Power:</p>}
-          {isValid(ch1Power) && <p className="mr-2 select-none">{ch1Power}</p>}
-          {isValid(ch2Power) && <p className="mr-2 select-none">{ch2Power}</p>}
-          {isValid(ch3Power) && <p className="mr-2 select-none">{ch3Power}</p>}
-        </div> */}
 
-        <div
-          id="DeviceInfo"
-          className="select-none  text-[#ccc] flex justify-start text-[14px] font-medium"
-        >
-          <p className="mr-1"> Device:</p>
+        <div className="select-none text-[#ccc] flex justify-start text-[14px] font-medium">
+          <p className="mr-1">Device:</p>
           <p className="mr-2 select-none">{getHardwareName(hardwareModel)}</p>
         </div>
-        <div
-          id="DeviceInfo"
-          className="select-none  text-[#ccc] flex justify-start text-[14px] font-medium"
-        >
-          <p className="mr-1">Role:</p>{" "}
+
+        <div className="select-none text-[#ccc] flex justify-start text-[14px] font-medium">
+          <p className="mr-1">Role:</p>
           <p className="mr-2 select-none">{getRoleName(role)}</p>
         </div>
       </div>
-      <NodeInfoPopup
-        id={id}
-        isOpen={showPopup}
-        onClose={() => {
-          setShowPopup(false);
-        }}
-      />
     </div>
   );
 }

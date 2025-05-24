@@ -1,4 +1,27 @@
 // types/NodeData.ts
+export function getHardwareName(id: number | undefined): string {
+  if (id === undefined) {
+    return "Unknown Hardware";
+  }
+  const hardware_model = HardwareModel[id];
+  if (!hardware_model) {
+    return "Unknown Hardware";
+  }
+  return hardware_model.split("_").join(" ");
+}
+
+export function getRoleName(id: number | undefined): string {
+  if (id === undefined) {
+    return "Unknown Role";
+  }
+
+  const hardware_model = Role[id];
+  if (!hardware_model) {
+    return "Unknown Role";
+  }
+  return hardware_model.split("_").join(" ");
+}
+
 export interface Telemetry {
   air_util_tx?: number;
   battery_level?: number;
@@ -53,7 +76,7 @@ export interface NodeData {
   num_online_local_nodes?: number;
 }
 
-export enum HardwareModel {
+enum HardwareModel {
   /*
    * TODO: REPLACE
    */
@@ -569,7 +592,7 @@ export enum HardwareModel {
   PRIVATE_HW = 255,
 }
 
-export enum Role {
+enum Role {
   /*
    * Description: App connected or stand alone messaging device.
    * Technical Details: Default Role

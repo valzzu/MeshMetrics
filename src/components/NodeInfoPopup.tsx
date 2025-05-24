@@ -1,66 +1,59 @@
-import { useEffect, useState } from "react";
-import config from "../config.json";
 import type { NodeData } from "../utils/NodeData";
+import { getHardwareName, getRoleName } from "../utils/NodeData";
+
 import { lastSeen } from "../utils/mqttChecks";
-import { Zoomies } from "ldrs/react";
 
 interface NodeInfoPopupProps {
-  id: string; // id of the node
-  isOpen: boolean;
+  node: NodeData;
   onClose: () => void;
+  // other props if any
 }
 
-function NodeInfoPopup({ id, isOpen, onClose }: NodeInfoPopupProps) {
-  if (!isOpen) return null;
-
+function NodeInfoPopup({ node, onClose }: NodeInfoPopupProps) {
   const isValid = (value: string) =>
     value && value !== "N/A" && value.trim() !== "";
 
-  // State to hold node data and loading status
-  const [nodeData, setNodeData] = useState<NodeData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const temp =
+    node.telemetry?.temperature !== undefined
+      ? `${node.telemetry.temperature}°C`
+      : "N/A";
 
-  // Fetch node data from the API
-  useEffect(() => {
-    const fetchNodeData = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`${config.api_url}/api/nodes/${id}`);
-        if (response.status !== 200) {
-          console.error("Error fetching node data:", response.statusText);
-          return;
-        }
-        const nodeData = await response.json();
-        console.log(nodeData);
-        setNodeData(nodeData);
-      } catch (error) {
-        console.error("Error fetching node data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const humidity =
+    node.telemetry?.relative_humidity !== undefined
+      ? `${node.telemetry.relative_humidity}%`
+      : "N/A";
 
-    fetchNodeData();
-  }, [id]);
+  const pressure =
+    node.telemetry?.barometric_pressure !== undefined
+      ? `${node.telemetry.barometric_pressure}hPa`
+      : "N/A";
 
   const ch1Power =
-    nodeData &&
-    nodeData.telemetry?.voltage_ch1 !== undefined &&
-    nodeData.telemetry?.current_ch1 !== null
-      ? `${nodeData.telemetry.voltage_ch1}V ${nodeData.telemetry.current_ch1}mA`
-      : "0V 0mA";
+    node &&
+    node.telemetry?.voltage_ch1 !== undefined &&
+    node.telemetry?.current_ch1 !== null
+      ? `${node.telemetry.voltage_ch1}V ${node.telemetry.current_ch1}mA`
+      : "N/A";
   const ch2Power =
-    nodeData &&
-    nodeData?.telemetry?.voltage_ch2 !== undefined &&
-    nodeData?.telemetry?.current_ch2 !== null
-      ? `${nodeData.telemetry.voltage_ch2}V ${nodeData.telemetry.current_ch2}mA`
-      : "0V 0mA";
+    node &&
+    node?.telemetry?.voltage_ch2 !== undefined &&
+    node?.telemetry?.current_ch2 !== null
+      ? `${node.telemetry.voltage_ch2}V ${node.telemetry.current_ch2}mA`
+      : "N/A";
   const ch3Power =
-    nodeData &&
-    nodeData?.telemetry?.voltage_ch3 !== undefined &&
-    nodeData?.telemetry?.current_ch3 !== null
-      ? `${nodeData.telemetry.voltage_ch3}V ${nodeData.telemetry.current_ch3}mA`
-      : "0V 0mA";
+    node &&
+    node?.telemetry?.voltage_ch3 !== undefined &&
+    node?.telemetry?.current_ch3 !== null
+      ? `${node.telemetry.voltage_ch3}V ${node.telemetry.current_ch3}mA`
+      : "N/A";
+
+  //check if battery level is 101 if so set text to PWRD (oiwered over usb)
+  const batteryLevel =
+    node.telemetry?.battery_level !== undefined
+      ? Number(node.telemetry.battery_level) === 101
+        ? "PWRD"
+        : `${node.telemetry.battery_level}%`
+      : "N/A";
 
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
@@ -102,59 +95,62 @@ function NodeInfoPopup({ id, isOpen, onClose }: NodeInfoPopupProps) {
 
         {/* Content with padding to avoid overlap */}
         <div className="pt-8">
-          {isLoading ? (
-            <div className="flex flex-col items-center justify-center select-none min-h-[200px]">
-              <p>Loading nodes</p>
-              <Zoomies
-                size="80"
-                stroke="5"
-                bgOpacity="0.1"
-                speed="1.4"
-                color="white"
-              />
-            </div>
-          ) : nodeData ? (
-            <div className="flex flex-col gap-4 justify-start text-left">
-              <h2 className="text-[24px] font-bold select-none">
-                {nodeData.longName} | {nodeData.shortName}
-              </h2>
+          <div className="flex flex-col gap-4 justify-start text-left">
+            <h2 className="text-[24px] font-bold select-none">
+              {node.longName} | {node.shortName}
+            </h2>
+            <div>
+              <p className="mr-2 select-none">
+                {Number.parseFloat(Number(node.telemetry?.voltage).toFixed(2))}V
+                | {batteryLevel}
+              </p>
+              <p className="mr-2 select-none">
+                Active:{" "}
+                {lastSeen({
+                  date: node.mqtt_updated_at
+                    ? new Date(node.mqtt_updated_at)
+                    : new Date(0),
+                })}
+              </p>
+              <p className="mr-2 select-none">
+                Hardware:{" "}
+                {getHardwareName(
+                  typeof node.hardware_model === "number"
+                    ? node.hardware_model
+                    : Number.isNaN(Number(node.hardware_model))
+                    ? undefined
+                    : Number(node.hardware_model)
+                )}
+              </p>
+              <p className="mr-2 select-none">
+                Role:{" "}
+                {getRoleName(
+                  typeof node.role === "number"
+                    ? node.role
+                    : Number.isNaN(Number(node.role))
+                    ? undefined
+                    : Number(node.role)
+                )}
+              </p>
               <div>
-                <p>
-                  Active:{" "}
-                  {lastSeen({
-                    date: nodeData.mqtt_updated_at
-                      ? new Date(nodeData.mqtt_updated_at)
-                      : new Date(0),
-                  })}
-                </p>
-                <div>
-                  {isValid(String(nodeData.telemetry.temperature)) && (
-                    <p className="mr-2 select-none">
-                      Temp: {nodeData.telemetry.temperature}°C
-                    </p>
-                  )}
-                  {isValid(String(nodeData.telemetry.relative_humidity)) && (
-                    <p className="mr-2 select-none">
-                      Humidity: {nodeData.telemetry.relative_humidity}%
-                    </p>
-                  )}
-                  {isValid(String(nodeData.telemetry.barometric_pressure)) && (
-                    <p className="mr-2 select-none">
-                      Pressure: {nodeData.telemetry.barometric_pressure}hPa
-                    </p>
-                  )}
-                </div>
-                <h5>Power telemetry: </h5>
-                <p>ch1: {ch1Power}</p>
-                <p>ch2: {ch2Power}</p>
-                <p>ch3: {ch3Power}</p>
+                {isValid(temp) && (
+                  <p className="mr-2 select-none">Temp: {temp}</p>
+                )}
+                {isValid(humidity) && (
+                  <p className="mr-2 select-none">Humidity: {humidity}</p>
+                )}
+                {isValid(pressure) && (
+                  <p className="mr-2 select-none">Pressure: {pressure}</p>
+                )}
               </div>
+              {isValid(ch1Power || ch2Power || ch3Power) && (
+                <h5>Power telemetry: </h5>
+              )}
+              {isValid(ch1Power) && <p>ch1: {ch1Power}</p>}
+              {isValid(ch2Power) && <p>ch2: {ch2Power}</p>}
+              {isValid(ch3Power) && <p>ch3: {ch3Power}</p>}
             </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center select-none min-h-[200px]">
-              <p>Error loading node data</p>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
