@@ -47,6 +47,14 @@ function NodeInfoPopup({ node, onClose }: NodeInfoPopupProps) {
       ? `${node.telemetry.voltage_ch3}V ${node.telemetry.current_ch3}mA`
       : "N/A";
 
+  //check if battery level is 101 if so set text to PWRD (oiwered over usb)
+  const batteryLevel =
+    node.telemetry?.battery_level !== undefined
+      ? node.telemetry.battery_level === 101
+        ? "PWRD"
+        : `${node.telemetry.battery_level}%`
+      : "N/A";
+
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
@@ -92,7 +100,10 @@ function NodeInfoPopup({ node, onClose }: NodeInfoPopupProps) {
               {node.longName} | {node.shortName}
             </h2>
             <div>
-              <p>
+              <p className="mr-2 select-none">
+                {node.telemetry.voltage}V | {batteryLevel}
+              </p>
+              <p className="mr-2 select-none">
                 Active:{" "}
                 {lastSeen({
                   date: node.mqtt_updated_at
@@ -100,7 +111,7 @@ function NodeInfoPopup({ node, onClose }: NodeInfoPopupProps) {
                     : new Date(0),
                 })}
               </p>
-              <p>
+              <p className="mr-2 select-none">
                 Hardware:{" "}
                 {getHardwareName(
                   typeof node.hardware_model === "number"
@@ -110,7 +121,7 @@ function NodeInfoPopup({ node, onClose }: NodeInfoPopupProps) {
                     : Number(node.hardware_model)
                 )}
               </p>
-              <p>
+              <p className="mr-2 select-none">
                 Role:{" "}
                 {getRoleName(
                   typeof node.role === "number"

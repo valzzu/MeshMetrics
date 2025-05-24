@@ -59,13 +59,35 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
   0;
 
   return (
-    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
-      className=" w-90 h-30 m-2 p-2 text-white flex hover:border-[#2a9d5f] hover:border-2 rounded-lg shadow-md "
+      className="relative w-90 h-30 m-2 p-2 bg-[#1b1b1d] text-white flex hover:border-[#2a9d5f] hover:border-2 rounded-lg shadow-md"
       onClick={() => {
         if (onOpenPopup) onOpenPopup();
       }}
+      onKeyUp={(e) => {
+        if ((e.key === "Enter" || e.key === " ") && onOpenPopup) {
+          onOpenPopup();
+        }
+      }}
     >
+      {/* Location icon in the top-right corner */}
+      {longitude && latitude && (
+        <a
+          className="absolute bottom-2 right-2 sele§ct-none hover:scale-125 transition-transform duration-170 ease-in-out"
+          id="location-icon"
+          href={`https://www.google.com/maps/search/?q=${latitude},${longitude}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <img
+            src="location.svg"
+            alt="Position Icon"
+            className="text-white w-6 h-6"
+          />
+        </a>
+      )}
+
       {/* Left Section: Short Name in a grey circle */}
       <div className="flex items-center justify-center w-20 h-20 ml-3 mr-4">
         <div
@@ -77,32 +99,14 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
         </div>
       </div>
 
-      {/* Right Section: Long Name and Telemetry in a centered column */}
+      {/* Right Section: Long Name and Telemetry */}
       <div className="flex-1 flex flex-col justify-start text-left">
-        {longitude && latitude ? (
-          <a
-            className="text-[18px] font-bold select-none"
-            href={`https://www.google.com/maps/search/?q=${latitude},${longitude}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()} // Prevent popup on link click
-          >
-            {displayLongName}
-          </a>
-        ) : (
-          <p className="text-[18px] font-bold select-none">{displayLongName}</p>
-        )}
-
-        <p
-          id="LastSeen"
-          className="select-none text-[#ccc] text-[14px] font-medium text-left"
-        >
+        <p className="text-[18px] font-bold select-none">{displayLongName}</p>
+        <p className="select-none text-[#ccc] text-[14px] font-medium text-left">
           Active: {lastSeen({ date: mqttUpdated })}
         </p>
-        <div
-          id="EnvInfo"
-          className="flex justify-start text-[#ccc] select-none text-[14px] font-medium"
-        >
+
+        <div className="flex justify-start text-[#ccc] select-none text-[14px] font-medium">
           {isValid(temp || humidity || pressure) && (
             <p className="mr-1">Env:</p>
           )}
@@ -111,18 +115,13 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
           {isValid(pressure) && <p className="mr-2 select-none">{pressure}</p>}
         </div>
 
-        <div
-          id="DeviceInfo"
-          className="select-none  text-[#ccc] flex justify-start text-[14px] font-medium"
-        >
-          <p className="mr-1"> Device:</p>
+        <div className="select-none text-[#ccc] flex justify-start text-[14px] font-medium">
+          <p className="mr-1">Device:</p>
           <p className="mr-2 select-none">{getHardwareName(hardwareModel)}</p>
         </div>
-        <div
-          id="DeviceInfo"
-          className="select-none  text-[#ccc] flex justify-start text-[14px] font-medium"
-        >
-          <p className="mr-1">Role:</p>{" "}
+
+        <div className="select-none text-[#ccc] flex justify-start text-[14px] font-medium">
+          <p className="mr-1">Role:</p>
           <p className="mr-2 select-none">{getRoleName(role)}</p>
         </div>
       </div>
