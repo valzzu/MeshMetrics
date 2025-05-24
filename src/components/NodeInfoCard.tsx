@@ -73,7 +73,7 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
       {/* Location icon in the top-right corner */}
       {longitude && latitude && (
         <a
-          className="absolute bottom-2 right-2 sele§ct-none hover:scale-125 transition-transform duration-170 ease-in-out"
+          className="absolute bottom-2 right-2 select-none hover:scale-125 transition-transform duration-170 ease-in-out"
           id="location-icon"
           href={`https://www.google.com/maps/search/?q=${latitude},${longitude}`}
           target="_blank"
