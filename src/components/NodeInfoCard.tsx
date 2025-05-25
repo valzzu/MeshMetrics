@@ -60,7 +60,7 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
 
   return (
     <div
-      className="relative w-90 h-30 m-2 p-2 bg-[#1b1b1d] text-white flex hover:border-[#2a9d5f] hover:border-2 rounded-lg shadow-md"
+      className="relative w-90 h-35 m-2 p-2 bg-[#1b1b1d] text-white flex hover:border-[#2a9d5f] hover:bg-[#313135] rounded-lg shadow-md"
       onClick={() => {
         if (onOpenPopup) onOpenPopup();
       }}
@@ -89,9 +89,9 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
       )}
 
       {/* Left Section: Short Name in a grey circle */}
-      <div className="flex items-center justify-center w-20 h-20 ml-3 mr-4">
+      <div className="flex items-center justify-center w-20 h-20 ml-3 mr-4 top-5 ">
         <div
-          className={`w-20 h-20 ${updatedClass} border-0 border-solid border-[#333] rounded-full flex items-center justify-center mt-0 mx-[-5px] mb-[-23px]`}
+          className={`w-20 h-20 ${updatedClass} border-0 border-solid border-[#333] rounded-full flex items-center justify-center mt-0 mx-[-5px] mb-[-23px] left-5 bottom-13 absolute`}
         >
           <span className={`${shortNameClass} select-none`}>
             {displayShortName}
@@ -100,7 +100,7 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
       </div>
 
       {/* Right Section: Long Name and Telemetry */}
-      <div className="flex-1 flex flex-col justify-start text-left">
+      <div className="flex-1 flex flex-col justify-start text-left top-2 relative">
         <p className="text-[18px] font-bold select-none">{displayLongName}</p>
         <p className="select-none text-[#ccc] text-[14px] font-medium text-left">
           Active: {lastSeen({ date: mqttUpdated })}
