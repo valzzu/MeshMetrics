@@ -1,4 +1,5 @@
 import { useState } from "react";
+import MadeBy from "./MadeBy";
 
 interface HeaderProps {
   online: any[];
@@ -32,6 +33,7 @@ const Header = ({ online, offline }: HeaderProps) => {
         {/* <div className="absolute left-1/2 transform -translate-x-1/2 text-2xl font-bold select-none">
           Mesh Metrics @ Valzzu3D
         </div> */}
+        <MadeBy />
         <nav className="hidden md:flex gap-8">
           <a
             href="/"

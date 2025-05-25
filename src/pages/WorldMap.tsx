@@ -189,7 +189,7 @@ function WorldMap({ nodes }: WorldMapProps) {
         center={[65, 25]}
         zoom={6}
         scrollWheelZoom={true}
-        style={{ height: "100%", width: "100%" }}
+        style={{ height: "95%", width: "100%" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
