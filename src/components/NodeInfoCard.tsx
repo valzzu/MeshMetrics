@@ -60,7 +60,7 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
 
   return (
     <div
-      className="relative w-90 h-35 m-2 p-2 bg-[#1b1b1d] text-white flex hover:border-[#2a9d5f] hover:bg-[#313135] rounded-lg shadow-md"
+      className="relative w-90 h-35 m-2 p-2 bg-[#1b1b1d] text-white flex hover:border-[#2a9d5f] hover:bg-[#313135] rounded-lg shadow-md easy-in-out transition-all duration-150  "
       onClick={() => {
         if (onOpenPopup) onOpenPopup();
       }}
@@ -73,7 +73,7 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
       {/* Location icon in the top-right corner */}
       {longitude && latitude && (
         <a
-          className="absolute bottom-2 right-2 select-none hover:scale-125 transition-transform duration-170 ease-in-out"
+          className="absolute bottom-2 right-2 select-none hover:scale-125 transition-transform duration-170 ease-in-out z-50"
           id="location-icon"
           href={`https://www.google.com/maps/search/?q=${latitude},${longitude}`}
           target="_blank"
