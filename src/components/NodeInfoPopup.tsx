@@ -132,6 +132,24 @@ function NodeInfoPopup({ node, onClose }: NodeInfoPopupProps) {
                     : Number(node.role)
                 )}
               </p>
+              <p>
+                Uptime:{" "}
+                {node.telemetry.uptime_seconds
+                  ? `${Math.floor(
+                      node.telemetry.uptime_seconds / 86400
+                    )}d ${Math.floor(
+                      (node.telemetry.uptime_seconds % 86400) / 3600
+                    )}h ${Math.floor(
+                      (node.telemetry.uptime_seconds % 3600) / 60
+                    )}m `
+                  : "N/A"}
+              </p>
+              <p>
+                Firmware:{" "}
+                {node.firmware_version
+                  ? node.firmware_version.split(".").slice(0, 3).join(".")
+                  : "N/A"}
+              </p>
               <div>
                 {isValid(temp) && (
                   <p className="mr-2 select-none">Temp: {temp}</p>
