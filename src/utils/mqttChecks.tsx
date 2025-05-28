@@ -9,12 +9,18 @@ export function lastSeen({ date }: { date: Date }): string {
   if (date.getTime() < new Date("2000-01-01").getTime()) {
     return "unknown";
   }
+  if (diffInMinutes >= 1440) {
+    const days = Math.floor(diffInMinutes / 1440);
+    const hours = Math.floor((diffInMinutes % 1440) / 60);
+    const minutes = diffInMinutes % 60;
+    return `${days}d ${hours}h ${minutes}min ago`;
+  }
   if (diffInMinutes >= 60) {
     const hours = Math.floor(diffInMinutes / 60);
     const minutes = diffInMinutes % 60;
-    return `${hours} h ${minutes} min ago`;
+    return `${hours}h ${minutes}min ago`;
   }
-  return `${diffInMinutes} min ago`;
+  return `${diffInMinutes}min ago`;
 }
 
 export function isMqttUpdated({
