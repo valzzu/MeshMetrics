@@ -16,7 +16,7 @@ function App() {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      const response = await fetch(`${config.api_url}/api/nodes`);
+      const response = await fetch(`${config.api_url}/nodes`);
       const initialNodes = await response.json();
       console.log("fetched");
 
