@@ -46,7 +46,7 @@ app.use((req, res, next) => {
 });
 
 // REST API endpoint
-app.get("/api/nodes", async (req, res) => {
+app.get("/nodes", async (req, res) => {
   const nodes = await getNodesData();
   res.json(nodes);
 });
