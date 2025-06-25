@@ -1,3 +1,0 @@
-[submodule "mqttCollector/protobufs"]
-	path = mqttCollector/protobufs
-	url = https://github.com/meshtastic/protobufs.git
