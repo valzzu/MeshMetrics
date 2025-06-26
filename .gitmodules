@@ -1,3 +1,0 @@
-[submodule "New Backend/protobufs"]
-	path = New Backend/protobufs
-	url = https://github.com/meshtastic/protobufs.git
