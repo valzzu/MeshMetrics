@@ -42,6 +42,12 @@ const Header = ({ online, offline }: HeaderProps) => {
             Home
           </a>
           <a
+            href="/stats"
+            className="text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white px-3 py-2 hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200 select-none"
+          >
+            Stats
+          </a>
+          <a
             href="/map"
             className="text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white px-3 py-2 hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200 select-none"
           >
@@ -68,6 +74,12 @@ const Header = ({ online, offline }: HeaderProps) => {
               onClick={() => setIsMenuOpen(false)}
             >
               Home
+            </a>
+            <a
+              href="/stats"
+              className="text-lg font-semibold uppercase rounded-md bg-[#2a9d5f] text-white px-3 py-2 hover:bg-[#3bc77b] cursor-pointer transition-colors duration-200 select-none"
+            >
+              Stats
             </a>
             <a
               href="/map"
