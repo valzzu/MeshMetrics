@@ -43,6 +43,15 @@ async function handleMessage(topic, message, root) {
 
   const portnum = envelope.packet?.decoded?.portnum;
   const bitfield = envelope.packet?.decoded?.bitfield;
+
+    // Increment portnum count if portnum is valid
+    if (portnum != null && envelope.packet.decoded) {
+      try {
+        await schemas.portnumCount.incrementCount(portnum);
+      } catch (err) {
+        logger.error(`Error incrementing portnum count for ${portnum}:`, err.message);
+      }
+    }
   const {
     allowedPortnums,
     dropPacketsNotOkToMqtt,

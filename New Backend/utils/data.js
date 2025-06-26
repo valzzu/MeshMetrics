@@ -76,4 +76,44 @@ async function getNodesData() {
   }));
 }
 
-module.exports = { getNodesData };
+/**
+ * Counts packets per node in the last 24 hours across relevant collections.
+ * @returns {Promise<Array<Object>>} Array of { from, count } objects.
+ */
+async function getPacketsPerNode() {
+  const collections = [
+    schemas.textMessage,
+    schemas.position,
+    schemas.telemetry,
+    schemas.waypoint,
+    schemas.neighbourInfo,
+    schemas.mapReport,
+    schemas.traceroute,
+  ];
+
+  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  // Aggregate counts from each collection
+  const results = await Promise.all(
+    collections.map(async (collection) => {
+      return await collection.aggregate([
+        { $match: { UpdatedAt: { $gte: twentyFourHoursAgo } } },
+        { $group: { _id: "$from", count: { $sum: 1 } } },
+        { $project: { from: "$_id", count: 1, _id: 0 } },
+      ]);
+    })
+  );
+
+  // Merge results by 'from' field
+  const packetCounts = {};
+  results.flat().forEach(({ from, count }) => {
+    packetCounts[from] = (packetCounts[from] || 0) + count;
+  });
+
+  // Convert to array and sort by count descending
+  return Object.entries(packetCounts)
+    .map(([from, count]) => ({ from, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+module.exports = { getNodesData, getPacketsPerNode, formatTelemetry };

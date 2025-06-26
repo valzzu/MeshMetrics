@@ -7,4 +7,5 @@ module.exports = {
   neighbourInfo: require("./neighbourInfo"),
   mapReport: require("./mapReport"),
   traceroute: require("./traceroute"),
+  portnumCount: require("./portnumcount"),
 };
