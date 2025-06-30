@@ -97,7 +97,7 @@ async function getPacketsPerNode() {
   const results = await Promise.all(
     collections.map(async (collection) => {
       return await collection.aggregate([
-        { $match: { UpdatedAt: { $gte: twentyFourHoursAgo } } },
+        { $match: { updatedAt: { $gte: twentyFourHoursAgo } } },
         { $group: { _id: "$from", count: { $sum: 1 } } },
         { $project: { from: "$_id", count: 1, _id: 0 } },
       ]);
