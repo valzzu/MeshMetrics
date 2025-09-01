@@ -71,7 +71,7 @@ async function getNodesData() {
       // Function to format numbers from strings with specific precision
 
       return {
-        id: info._id,
+        id: info.id,
         shortName: info.short_name,
         longName: info.long_name,
         telemetry: nodeTelemetry
