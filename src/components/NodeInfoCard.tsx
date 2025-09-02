@@ -70,7 +70,7 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
         }
       }}
     >
-      <p className="absolute bottom-2 left-2 text-[15px] font-mono select-none">
+      <p className="absolute bottom-2 left-2 text-[12px] font-mono font-medium not-italic tracking-[0.1em] text-white pl-[5px] select-none">
         ID: <span className="text-[#ccc]">{node.id}</span>
       </p>
       {/* Location icon in the top-right corner */}
@@ -104,7 +104,7 @@ function NodeInfoCard({ node, onOpenPopup }: NodeInfoCardProps) {
 
       {/* Right Section: Long Name and Telemetry */}
       <div className="flex-1 flex flex-col justify-start text-left top-2  left-4 relative">
-        <p className="text-[18px] font-bold select-none">{displayLongName}</p>
+        <p className="text-[16px] font-bold select-none">{displayLongName}</p>
         <p className="select-none text-[#ccc] text-[14px] font-medium text-left">
           Active: {lastSeen({ date: mqttUpdated })}
         </p>
